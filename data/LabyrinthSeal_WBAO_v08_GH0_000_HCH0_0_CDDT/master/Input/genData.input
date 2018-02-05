@@ -1,0 +1,78 @@
+### Restart option
+### 2= new optimization run
+### 1= restart based on existing database (please: deactivate random member creation for initializazion --> CREATE_RANDOMLY)
+RESTART			  1	../dataBasePost	# (0: No Restart Option; 1: RESTARTFILE (give path to dataBasePost); 2:Member[0]=InitialMember)
+
+####################################################################################################
+### Basic configuration of the optimization run
+####################################################################################################
+
+### Set total number of results here ( see >>../../Slave0/EvaluateMember/EvaluateMember.py )
+NUOFFLOWPARAM		3
+
+### Definition of optimization objectives
+### One line per objective, you can enter equations in C/python style here. Results "flow_XXX" are
+### counted starting with flow_0.
+fitness		flow_0	#CD
+fitness		flow_1	#DT
+
+### Definition of region of interest for all objectives
+REGIONOFINTEREST	1		# (If REGIONOFINTEREST=1, give ROI for all objectives)
+0.0	1.0	#CD
+0.0	inf	#DT
+
+### Definition of restrictions
+### Syntax: one line per restriction containing: result index (starting from 0), minimum and maximum.
+### The minima and maxima can be "-inf" or "inf".
+FLOWPARAM_ROI		1		# (Give number of ROIs on other results)
+2	0.49e-3	inf	#EC
+
+####################################################################################################
+### General options
+####################################################################################################
+
+### Saving options
+SAVEMEMBER		10		# (the complete process chain of X members will be saved)
+CREATERESTARTFOLDER	0		# (if activated, a folder from OptiResults will be chosen and copied to restartFolderSlave$)
+UPDATE_DB		-1		# (if > 0: recalculate fitness for database every NUOFCONVERGEDmod(UPDATE_DB)==0)
+WRITEOUT_ALL		1		# (DataBase is written every WRITEOUT_ALL received member)
+WRITEOUT_BEST		1		# (BestDataBase is written every WRITEOUT_ALL received member)
+
+### Initialization options
+CREATE_RANDOMLY		0		# (CREATE_RANDOMLY the members are created randomly as initializatio of the surrogate model)
+CREATE_RANDOMLY_FLAG	3		# (0:Randomly; 1:Mutate initial Parameter; 2:DOE; 3:LatinHyperCube)
+CREATE_DOE_INIT		0		# (CREATE_DOE_INIT must be >  CREATE_RANDOMLY and is activated for only for CREATE_RANDOMLY_FLAG=2)
+
+### Finalization options
+MAXMEMBERS		10000		# (Just for memory allocation: the maximum number of members in the database, must be >NROFPARENTS)
+STOPMEMBERS		500		# (The program terminates after STOPMEMBERS converged members)
+
+####################################################################################################
+### Settings for the genetic algorithm and surrogate models
+####################################################################################################
+
+PARAMETERDEPTH		20	20	# (There are 2^PARAMETERDEPTH possible values for parameters)
+REFINE			80		# (PARAMETERDEPTH is increased by 1 at latest after REFINE received Members)
+REFINENOBEST		50		# (PARAMETERDEPTH is increased by 1 at latest after REFINENOBEST recieved Members with Paretorank>1)
+
+### Ratios between member generators (only integers)
+MUTATE			0
+GRADIENT		0
+CROSSOVER		0
+DIFFEVO			0
+EXPIMPR			1		# Members created by the surrogate model algorithm
+
+### Surrogate model optimization settings
+NUOFMEMBEREXPIMPR	1000		# Members to be evaluated on surrogate model
+MEMBEROPTIMIZATIONFLAG	666		# How to create candidates for the meta model: 0= genetic alg with good members (standard), 1= mutate members (more changes compared to 0)
+TRAINMM			10		# Train meta model every X new candidates (increase when master is to slow in delivering new candiates for the slaves)
+
+### Propabilities for member creation (for the surrogate members??)
+MUTATIONRATE		1.0		# (Propability for mutation of a specific parameter: MUTATE,GRADIENT,CROSSOVER)
+DIFFEVORATE		0.7		# (Propability for mutation of a specific parameter: DIFFEVO)
+
+DEVIATION_MIN		0.0001		# MIN Deviation for Parameter mutation
+DEVIATION_MAX		0.2		# MAX Deviation for Parameter mutation
+
+NROFPARENTS		5		# (Number of possible parents for a member - must be > 5 !)
+UPDATEPARENTS		1		# (Parents are updated each UPDATEPARENTS recieved Member)

@@ -1,0 +1,87 @@
+# OPTI_OPTIONS
+#
+# This file will be sourced by >>Slave_sge.sh making these variables available during the execution
+# of the process chain.
+#
+# Christoph Starke, 2012-08-27
+# 2014-10-14	Revised option file
+# 2015-04-13	Use "export" to make options available for all process chain sub-processes
+# 2015-06-08	Autoopti queues can be set separately for master and slave
+#		Submission host is switched off by default, it is not mandatory anymore!
+
+####################################################################################################
+### STARTING OF THE PROCESSES --> mandatory, do not leave them blank or undefined!
+####################################################################################################
+
+# The submission of the master, slave and job scripts can be controlled individually on all levels.
+# The option "queue" has to be set to either "local" for local start of the corresponding process or
+# a valid SGE project name when submission to grid is desired.
+# Hint: Set master queue to grid and slave queue to local in order to run slaves on the grid node of
+# the master process. Large process steps can then be submitted to cluster individually by using the
+# respective commands inside their launch scripts. Note that local jobs are started using the "nice"
+# command. That means that submitting slaves on the master note should not decrease the master's 
+# efficiency too much.
+# The "job" level will not be used by Autoopti. These environment variables will be provided to the
+# process chain where they can be used to start heavy jobs (e. g. CFD) to grid.
+
+# Master --> uses multi-threading only, distribution over more than one node not possible!
+export OPTI_master_queue=technology_cfd # local, technology_cfd, turbine_cfd_steady, ...
+export OPTI_master_procs=24
+
+# Slave --> "local" recommended to start slave on master node
+export OPTI_slave_queue=local # local, technology_cfd, turbine_cfd_steady, ...
+export OPTI_slave_procs=1
+
+# Jobs --> usused by Autoopti, please refer to it in your process chain definition
+export OPTI_job_queue=local # local, technology_cfd, turbine_cfd_steady, ...
+export OPTI_job_procs=1
+
+####################################################################################################
+### EXPERT SETTINGS
+####################################################################################################
+
+### Autoopti binary directory
+# This can be used to refer to a certain AO version. If blank, the standard version will be used.
+# (see files in master/src)
+#export OPTI_AO_DIR=/swd/autoopti/bin
+#export OPTI_AO_DIR=/share/grid/amtsf00p/autoopti_v2016/20161107/bin
+#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/share/grid/amtsf00p/autoopti_v2016/20161107/lib
+
+### Use of virtual displays (Xvfb)
+# The slave sge script will create a virtual display. The display number will be the first free
+# display starting with the value of this variable. Leave blank to avoid this functionality but be
+# aware that some programs check for an existing display even in batch mode. (e. g. Autogrid)
+export OPTI_virtual_display=0
+
+# Expert option: brute force display start
+# Normally, the display is only started on a certain port if no Xlock file is found. Sometimes there
+# are old Xlock files without any meaning. In this case setting this option to 1 might help.
+# Leave it 0 unless you know what you're doing!
+export OPTI_brute_force_display=0
+
+# Expert option: force cleanup of old displays
+# The old display are not cleaned at startup for local slaves as this will kill the displays of all
+# other slaves as well. But if you want, you can enforce a cleanup here.
+# Leave it 0 unless you know what you're doing!
+export OPTI_force_display_cleanup=0
+
+# Expert option: max number of displays. Leave it 99, never tried out...
+export OPTI_max_display=99
+
+# Optional host definition file (for local runs without grid engine or submission of slaves by ssh)
+# Define a host file in the input folder containing lines with slave numbers and host names 
+# separated by space. By this you can redirect slaves to different machines when running Autoopti 
+# locally. Example for host file:
+# 1   hostname1
+# 2   hostname2
+# If no host is defined for a slave number the slave will be started on the local host.
+export OPTI_host_definitions=
+
+# Host for job submission of slave jobs (e. g. mlhw777x or usorla7hp002x)
+# In the past, the cluster nodes were not able to recursively submit jobs to the grid engine. But 
+# this should be resolved now.
+export OPTI_submission_host=
+
+### Trial: run FEM with multiple threads
+export OMP_NUM_THREADS=4
+

@@ -1,0 +1,28 @@
+# Die folgenden Groessen beinhalten nicht den Root-prozess: NoSlaves_Target 3 bedeutet 3 Slaves also 4 Prozesse usw. 
+# NoSlaves und NoSlaves_Max werden nur zu Beginn eingelesen und danach nur zur Info ausgegeben, eingegebene Werte von NoSlaves bzw.  NoSlaves_Max werden dann ignoriert
+# Anpassungen der Prozessanzahl werden mittels NoSlaves_Target gesteuert. 
+NoSlaves		4
+NoSlaves_Target		4
+NoSlaves_Max		96
+
+
+# TimeLimit gibt die globale Prozess-Laufzeit in Stunden fuer den naechsten neu gestarteten Slave an. Der Wert muss >=0 sein
+# Achtung: Die Prozesse durchlaufen mindestens einmal die Prozesskette
+# TimeLimit 0. bedeutet der als naechstes erzeugte Slave durchläuft nur einmal die Prozesskette und ist danach beendet. Root muss dann ggf. neuen Prozess forken
+# Mittels TimeLimitSlave kann man einzelnen Slaves individuelle TimeLimits zuweisen.
+# TimeLimitSlave 0.5  7  9 bedeutet der 7. und 9. Slave bekommen nachdem sie das naechste mal in die Prozesskette gehen ein  neues TimeLimit von 30 Minuten zugeordnet
+TimeLimit		1.0
+TimeLimitSlave
+
+
+# hinter ExternalKilledSlaves koennen die gekillten oder abgestuerzten Slave-Prozesse (Nummerierung beginnt mit eins) hintereinander angegeben werden 1,...,97 
+# Die dazugehoerigen Slave-ordner werden daraufhin geloescht und der prozess wird als toter Prozess registriert.
+# Der entsrechende abgeschossene Member wird nicht in die database eingepflegt.
+ExternalKilledSlaves
+
+
+# SlaveCommand gibt an wie der neue Slave Aufruf aussieht.
+# default: ./AutoOpti_NoMPI.exe mytid
+# Ansonsten koennen Shell-Skripte (inklusive Pfad) angegeben werden die dann
+# nach master/src kopiert werden und denen mytid und TimeLimit als Argument uebergeben wird
+SlaveCommand	StartSlave.sh

@@ -1,0 +1,54 @@
+# 2015-09-16	InitType changed from "restart" to "ConstTheta", according to Georgios' suggestion
+# 2016-07-19	Update of input file, together with Andreas Schmitz, include multi-fidelity which is
+#		now possible with the newest binaries (revision 34)
+
+###################################
+# Correlation (expo, gauss, , spline)
+# Standard is Gauss
+###################################
+
+# Standard for single fidelity
+correlationMap{
+        0 0 gauss
+}
+
+# Standard for multi fidelity (co-kriging)
+#correlationMap{
+#	        0 0 linearCombination
+#		1 1 gauss
+#}
+
+
+################
+# SolverConfig
+################
+Threads                 24                     # Nr Threads used (NO NEED TO CHANGE, WILL BE DONE BY >>../src/StartMaster.sh)
+MinIterations           1                      # Minimal Iterations ( RPROP Deltas very small at the begining, should not Converge) 
+MaxIterations           600                    # Maximal Iterations
+MaxMatrixSize		5000                   # Number of members (randomly chosen) for meta model training (can be decreased to speed up training, but rather TRAINMM should be increased!)
+MinimizeMethod          RPROP                  # QuasiNewton/RPROP/Random
+ConvergenceEpsRel       0.00001                # Converged if: 1 - fabs(exp(thetas[t])/exp(thetas[t-1])) < ConvergenceEpsRel and 1-fabs(LikelihoodTerm[t]/LikelihoodTerm[t-1]) < ConvergenceEpsRel
+MaxConditionNumber      1e8
+useGradients            0
+trainExpo               1                      # only relevant for expo/spline correlation map
+useAproxSpur            0
+spurIterations          100
+trainDiag               0                      # set 1 for noisy data, standard = 0
+trainScale              1                      # only relevant for multi-fidelity, activate scaling factor between the two models, standard = 1
+
+################
+# Initialization
+################
+InitType                ConstTheta              # Random|ConstTheta|restart|forcerestart|UltraRestart
+                                                # ConstTheta= create new model each time (STANDARD)
+						# UltraRestart= newest
+						# Restart= use old meta model as start
+InitMatSize             5000                    # Matrix Size for initialization (best: like MaxMatrixSize)
+InitMaxIterations       10                      # MaxIterations for Initialization (senseless for ConstTheta/Restart)
+
+################
+# QN Config
+################
+QNMethod               linesearch               # 1D Search for QuasiNewton linearch (standard) or golden
+QNGoldenTolerance      0.000001
+

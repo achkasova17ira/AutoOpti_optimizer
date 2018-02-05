@@ -1,0 +1,12 @@
+### CleanSlaveDir
+WORKINGDIR	    ../../Slave$/CleanSlaveDir/
+PROCESS 	    ./CleanSlaveDir > CleanSlaveDir.out
+TIMEOUT             14400
+
+
+### WorkbenchRun.out
+WORKINGDIR	    ../../Slave$/WorkbenchRun/
+PROCESS 	    ./WorkbenchRun.py > WorkbenchRun.out
+CHECKKEYWORDFILE    ./WorkbenchRun.out WorkbenchRun DONE
+TIMEOUT             14400
+
